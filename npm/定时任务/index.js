@@ -11,7 +11,7 @@ const schedule = require('node-schedule')
  */
 function cron1(){
   schedule.scheduleJob('30 * * * * *',()=>{
-    console.log(1111);
+    console.log(2222);
   })
 }
 // 参数传入数值范围  ： //每分钟的1-10秒都会触发，其它通配符依次类推
