@@ -7,8 +7,10 @@ const router = require('koa-router')();
 router.prefix('/data')
 
 router.get('/jinjia',async (ctx,next)=>{
-    
-    const fileName = 'D:\\self\\demo\\2024-08月金价.xlsx'
+   
+   
+   try {
+	 const fileName = `/volume1/docker/qinglong/db/金价表/${ctx.request.query.time||'2024-08'}月金价.xlsx`
     const workbook = new ExcelJS.Workbook();
     await workbook.xlsx.readFile(fileName);
     const worksheet = workbook.getWorksheet('Sheet1');
@@ -18,7 +20,10 @@ router.get('/jinjia',async (ctx,next)=>{
         huishou: item[1],
         data: item[2]
     }))
-     ctx.success(responseData);
+     ctx.success(responseData);	
+   }  catch(err){
+   	ctx.error(500,'数据不存在')
+   }
 })
 
 
