@@ -1,5 +1,6 @@
 const Koa = require('koa');
 const app = new Koa();
+const path = require('path')
 
 const onerror = require('koa-onerror');
 const bodyparser = require('koa-bodyparser');
@@ -9,7 +10,8 @@ const errorHandler = require('./middleware/errorHandler')
 const response = require('./middleware/response')
 const validate = require('./middleware/validate')
 const initRouter = require('./routes')
-
+// 引入 koa-static
+  const staticFiles = require('koa-static')
 
 // error handler
 onerror(app);
@@ -48,6 +50,9 @@ app.use(json())
 
 // 注册路由
 initRouter(app)
+ // 指定 public目录为静态资源目录，用来存放 js css images 等
+  app.use(staticFiles(path.resolve(__dirname, "./public")))
+
 
 
 
