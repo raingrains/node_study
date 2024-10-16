@@ -41,6 +41,7 @@
         const chart1 = document.getElementById('chart1')
         const monthInput = document.getElementById('monthInput')
 
+		console.log('update_time:', '2024/10/16 10:37')
 
         monthInput.onchange = (e) => {
             drawChart(e.target.value)
@@ -61,7 +62,7 @@
             const ctx = chart.getContext('2d')
 
 
-            fetch(`http://${location.hostname}:4000/data/jinjia?time=` + (time || `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}`))
+            fetch(`/data/jinjia?time=` + (time || `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}`))
                 .then(res => res.json())
                 .then(res => {
                     chart.width = res.data.length * 40 + 'px'
