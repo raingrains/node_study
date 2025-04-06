@@ -14,12 +14,22 @@
         .header {
             display: flex;
             justify-content: center;
+            align-items: center;
+            margin: 20px auto;
+            position: relative;
+            width: max-content;
         }
 
-        #monthInput {
-            outline: none;
-            margin: 20px auto;
+        .header span {
             font-size: 24px;
+            margin: 0 10px;
+        }
+
+        .dateInput {
+            outline: none;
+            margin: 20px 0;
+            font-size: 24px;
+            width: 160px;
         }
     </style>
 
@@ -27,30 +37,39 @@
 
 <body>
 
-    <div class="header">
-        <input type="month" id="monthInput">
+    <div class="header" id="dateRange">
+        <input class="dateInput" type="text" placeholder="年-月-日" id="dateRangeStart">
+        <span>-</span>
+        <input class="dateInput" type="text" placeholder="年-月-日" id="dateRangeEnd">
     </div>
 
 
     <script src="
     https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js
     "></script>
+    <script src="./js/laydate.js"></script>
 
     <script>
-        const chart = document.getElementById('chart')
-        const chart1 = document.getElementById('chart1')
-        const monthInput = document.getElementById('monthInput')
-
-		console.log('update_time:', '2024/10/16 10:37')
-
-        monthInput.onchange = (e) => {
-            drawChart(e.target.value)
-        }
 
 
-        drawChart()
+        laydate.render({
+            elem: '#dateRange',
+            range: '/',
+            min: '2024-08-01', //设置最小日期
+            // 设置最大日期为当前日期
+            max: `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}-${new Date().getDate().toFixed().padStart(2, '0')}`, // 当前日期
+            done: function (value, date) {
+                console.log(value); //得到日期生成的值，如：2024-08-18
+                const [startDate, endDate] = value.split('/').map(item => item.trim())
+                document.querySelector('#dateRangeStart').value = startDate
+                document.querySelector('#dateRangeEnd').value = endDate
+                drawChart(startDate, endDate)
+            }
+        });
 
-        function drawChart(time) {
+        drawChart(`${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}-01`, `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}-${new Date().getDate().toFixed().padStart(2, '0')}`)
+
+        function drawChart(startDate, endDate) {
             if (document.querySelector('.chart')) {
                 document.body.removeChild(document.querySelector('.chart'))
             }
@@ -62,40 +81,34 @@
             const ctx = chart.getContext('2d')
 
 
-            fetch(`/data/jinjia?time=` + (time || `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}`))
+            fetch(`/data/jinjia?time=${startDate}/${endDate}`)
                 .then(res => res.json())
                 .then(res => {
                     chart.width = res.data.length * 40 + 'px'
 
+                    const data = res.data.data
                     new Chart(ctx, {
                         type: 'line',
                         data: {
-                            labels: res.data.map(item => item.date),
-                            datasets: [{
-                                label: '回收金价',
-                                data: res.data.map(item => item.huishou),
-                                fill: false,
-                                borderColor: 'rgb(75, 192, 192)',
-                                tension: 0.1,
-                            }],
+                            labels: data.map(item => item.date),
+                            datasets: [
+                                {
+                                    label: '回收金价',
+                                    data: data.map(item => item.huishou),
+                                    fill: false,
+                                    borderColor: 'rgb(75, 192, 192)',
+                                    tension: 0.1,
+                                },
+                                {
+                                    label: '购入金价',
+                                    data: data.map(item => item.data),
+                                    fill: false,
+                                    borderColor: 'rgb(192, 75, 75)',
+                                    tension: 0.1,
+                                }
+                            ],
                         },
                     });
-
-                    // chart1.width = res.data.length * 40 + 'px'
-                    // const ctx1 = chart1.getContext('2d')
-                    // new Chart(ctx1, {
-                    //     type: 'line',
-                    //     data: {
-                    //         labels: res.data.map(item => item.date),
-                    //         datasets: [{
-                    //             label: '购入金价',
-                    //             data: res.data.map(item => item.data),
-                    //             fill: false,
-                    //             borderColor: 'rgb(75, 192, 192)',
-                    //             tension: 0.1,
-                    //         }],
-                    //     },
-                    // });
                 })
 
         }

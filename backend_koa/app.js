@@ -22,20 +22,14 @@ app.use(bodyparser({
      enableTypes: ['json', 'form', 'text']
 }))
 
-
 app.use(
   cors({
-    // origin: function (ctx) {
-    //   if (ctx.url === '/test') {
-    //     return '*'; // 允许来自所有域名请求
-    //   }
-    //   return 'http://localhost:3999'; // 这样就能只允许 http://localhost:8080 这个域名的请求了
-    // },
-    exposeHeaders: ['Authorization']
-    // maxAge: 3600,
-    // credentials: true,
-    // allowMethods: ['GET', 'POST', 'DELETE', 'PUT'],
-    // allowHeaders: ['refresh_token', 'token']
+    origin: 'https://koa-server.1125089.xyz', // 指定允许的域名
+    exposeHeaders: ['Authorization'],
+    maxAge: 3600,
+    credentials: true, // 允许携带凭据
+    allowMethods: ['GET', 'POST', 'DELETE', 'PUT'],
+    allowHeaders: ['Content-Type', 'Authorization', 'refresh_token', 'token']
   })
 ); // 设置允许跨域访问该服务.
 
