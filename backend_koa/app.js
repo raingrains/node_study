@@ -24,10 +24,10 @@ app.use(bodyparser({
 
 app.use(
   cors({
-    origin: 'https://koa-server.1125089.xyz', // 指定允许的域名
+    origin: '*', // 指定允许的域名
     exposeHeaders: ['Authorization'],
     maxAge: 3600,
-    credentials: true, // 允许携带凭据
+    credentials: false, // 允许携带凭据
     allowMethods: ['GET', 'POST', 'DELETE', 'PUT'],
     allowHeaders: ['Content-Type', 'Authorization', 'refresh_token', 'token']
   })
