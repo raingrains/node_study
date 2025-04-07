@@ -83,7 +83,7 @@ router.get('/jinjia', async (ctx, next) => {
         WHERE (row_num - 1) % ? = 0
       `;
 
-      const [rows] = await promisePool.query(query, [times[0], times[1], step]);
+      const [rows] = await promisePool.query(query, [times[0]+' 00:00:00', times[1]+' 23:59:59', step]);
 
       // 返回结果
       ctx.success({
