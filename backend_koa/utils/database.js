@@ -11,7 +11,8 @@ const pool = mysql.createPool({
     charset: 'utf8mb4', // 字符集
     waitForConnections: true,
     connectionLimit: 10,
-    queueLimit: 0
+    queueLimit: 0,
+    connectTimeout: 100000, // 连接超时
 });
 
 // 使用 promise 包装连接池
