@@ -19,3 +19,4 @@ yarn-error.log*
 *.sln
 *.sw?
 config.js
+pm2.config.js
