@@ -87,7 +87,6 @@ router.get('/jinjia', async (ctx, next) => {
 
     // 执行查询，按步长筛选数据
     const [rows] = await promisePool.query(query, [times[0] + ' 00:00:00', times[1] + ' 23:59:59', step]);
-
     // 返回查询结果
     ctx.success({
       data: rows,
